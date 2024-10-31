@@ -7,6 +7,7 @@ class AppTheme {
   static const Color backgroundColor = Color(0xFFF5F5F5); // Cinza claro para fundo
   static const Color textColor = Color(0xFF212121); // Preto
   static const Color textAppMEnu = Color(0xFFF5F5F5);
+  static const Color vermelo = Color.fromARGB(255, 184, 4, 4);
 
   static final TextTheme textTheme = TextTheme(
     displayLarge: TextStyle(

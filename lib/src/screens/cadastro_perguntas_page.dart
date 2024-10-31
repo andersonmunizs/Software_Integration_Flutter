@@ -59,7 +59,7 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Cadastro de Pergunta"),
+        title: const Text("Cadastro de Pergunta", style: TextStyle(color: AppTheme.textAppMEnu)),
         backgroundColor: AppTheme.primaryColor,
       ),
       drawer: DrawerMenu(), // Usando o DrawerMenu aqui
@@ -81,7 +81,39 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Campo de Pesquisa
+                      // Campo Pergunta
+                      TextFormField(
+                        controller: _perguntaController,
+                        decoration: const InputDecoration(
+                          labelText: "Pergunta:",
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo obrigatório';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 10),
+
+                      // Campo Descrição
+                      TextFormField(
+                        controller: _descricaoController,
+                        maxLines: 5,
+                        decoration: const InputDecoration(
+                          labelText: "Descrição:",
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Campo obrigatório';
+                          }
+                          return null;
+                        },
+                      ),
+                       const SizedBox(height: 20),
+                                         // Campo de Pesquisa
                       TextFormField(
                         controller: _searchController,
                         decoration: InputDecoration(
@@ -115,38 +147,6 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
                       ],
 
                       const SizedBox(height: 20),
-
-                      // Campo Pergunta
-                      TextFormField(
-                        controller: _perguntaController,
-                        decoration: const InputDecoration(
-                          labelText: "Pergunta:",
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Campo obrigatório';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 10),
-
-                      // Campo Descrição
-                      TextFormField(
-                        controller: _descricaoController,
-                        maxLines: 5,
-                        decoration: const InputDecoration(
-                          labelText: "Descrição:",
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Campo obrigatório';
-                          }
-                          return null;
-                        },
-                      ),
                     ],
                   ),
                 ),
@@ -163,9 +163,26 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
                     return ListTile(
                       title: Text(cliente['nome']),
                       subtitle: Text("ID: ${cliente['id']}"),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => removeCliente(cliente['id']),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.visibility, color: Colors.blue),
+                            onPressed: () {
+                              // Lógica para visualizar detalhes do cliente
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.orange),
+                            onPressed: () {
+                              // Lógica para editar o cliente
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () => removeCliente(cliente['id']),
+                          ),
+                        ],
                       ),
                     );
                   },

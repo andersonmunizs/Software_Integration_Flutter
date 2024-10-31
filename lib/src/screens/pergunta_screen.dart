@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../widgets/drawer_menu.dart';
+import 'package:app_one/src/constants/theme.dart';
 
 class PerguntaScreen extends StatefulWidget {
   @override
@@ -28,7 +29,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
       "status": "Ativo"
     },
   ];
-  
+
   List<Map<String, dynamic>> filteredPerguntas = [];
   String status = "Todos";
   DateTime? dataCriacao;
@@ -45,16 +46,26 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
       filteredPerguntas = perguntas.where((pergunta) {
         final matchesQuery = pergunta["pergunta"].toLowerCase().contains(query);
         final matchesStatus = status == "Todos" || pergunta["status"] == status;
-        final matchesDate = dataCriacao == null || pergunta["dataCriacao"] == dataCriacao;
+        final matchesDate = dataCriacao == null || 
+                            (pergunta["dataCriacao"].year == dataCriacao!.year && 
+                             pergunta["dataCriacao"].month == dataCriacao!.month &&
+                             pergunta["dataCriacao"].day == dataCriacao!.day);
         return matchesQuery && matchesStatus && matchesDate;
       }).toList();
     });
   }
 
+  void navigateToCadastroPerguntas(Map<String, dynamic> pergunta) {
+    // Navega para a rota /cadastroperguntas com os dados da pergunta
+    Navigator.pushNamed(context, '/cadastroperguntas', arguments: pergunta);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Consultar Perguntas")),
+      appBar: AppBar(
+        title: Text("Consultar Perguntas", style: TextStyle(color: AppTheme.textAppMEnu)),
+      ),
       drawer: DrawerMenu(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -126,13 +137,14 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
 
             // Tabela de dados com DataTable estilizada
             Expanded(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              child: Container(
+                width: double.infinity, // Garante que o container ocupe toda a largura
+                height: double.infinity, // Garante que o container ocupe toda a altura
                 child: DataTable(
                   columnSpacing: 20,
-                  dataRowHeight: 60,
-                  headingRowColor: MaterialStateProperty.all(Colors.blueAccent),
-                  headingTextStyle: TextStyle(
+                  
+                  headingRowColor: MaterialStateProperty.all(AppTheme.primaryColor),
+                  headingTextStyle: const TextStyle(
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
@@ -141,6 +153,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                     DataColumn(label: Text("Cliente Vinculado")),
                     DataColumn(label: Text("Data de Criação")),
                     DataColumn(label: Text("Status")),
+                    DataColumn(label: Text("Ações")), // Coluna para ações
                   ],
                   rows: filteredPerguntas.map((pergunta) {
                     return DataRow(
@@ -175,6 +188,39 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                             ),
                           ),
                         ),
+                        // Célula com os ícones de ação
+                        DataCell(Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.search),
+                              color: AppTheme.primaryColor,
+                              onPressed: () {
+                                // Ação para visualizar
+                                navigateToCadastroPerguntas(pergunta);
+                              },
+                              tooltip: "Visualizar",
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              color: AppTheme.primaryColor,
+                              onPressed: () {
+                                // Ação para modificar
+                                navigateToCadastroPerguntas(pergunta);
+                              },
+                              tooltip: "Modificar",
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              color: AppTheme.vermelo,
+                              onPressed: () {
+                                // Ação para deletar
+                                // Adicione sua lógica de exclusão aqui
+                              },
+                              tooltip: "Deletar",
+                            ),
+                          ],
+                        )),
                       ],
                     );
                   }).toList(),

@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Aplicativo de Perguntas e Respostas',
       theme: AppTheme.lightTheme,
+      debugShowCheckedModeBanner: false,
       home: LoginScreen(),
       routes: {
         '/chat': (context) => ChatScreen(),
