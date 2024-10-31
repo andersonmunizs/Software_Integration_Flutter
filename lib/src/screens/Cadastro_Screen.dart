@@ -3,6 +3,7 @@ import 'package:app_one/src/constants/theme.dart';
 import 'package:http/http.dart' as http;
 
 class CadastroScreen extends StatelessWidget {
+  final TextEditingController nomeController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -10,12 +11,10 @@ class CadastroScreen extends StatelessWidget {
   Future<void> login(BuildContext context) async {
     final email = emailController.text;
     final password = passwordController.text;
-    var codeNumber = 200; // so para passar da requisição
-
+    var codeNumber = 200; // apenas para passar da requisição
 
     try {
-      // descomentar depois e subistituir
-     // Envia a requisição para a API
+      // Descomente e substitua ao fazer a requisição real
       // final response = await http.post(
       //   Uri.parse('https://suaapi.com/login'), // Substitua pelo URL da sua API
       //   headers: {'Content-Type': 'application/json'},
@@ -24,17 +23,14 @@ class CadastroScreen extends StatelessWidget {
       //     'password': password,
       //   }),
       // );
-    
-      
-      // Verifica a resposta da API // descomentar depois e substituir
-     // if (response.statusCode == 200) {
-      if (codeNumber == 200) {
-      
-        //final data = jsonDecode(response.body);
-        //final success = data['success']; // Suponha que a resposta tem um campo 'success'
 
-       // if (success || codeNumber == 200) {  // descomentar depois e substituir
-         if (codeNumber == 200) {
+      // Verifica a resposta da API
+      // if (response.statusCode == 200) {
+      if (codeNumber == 200) {
+        //final data = jsonDecode(response.body);
+        //final success = data['success']; // Suponha que a resposta tenha um campo 'success'
+
+        if (codeNumber == 200) { // substitua pelo if com 'success' quando usar a API real
           // Login bem-sucedido
           Navigator.pushReplacementNamed(context, '/dashboard');
         } else {
@@ -105,15 +101,14 @@ class CadastroScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                       TextField(
-                        controller: emailController,
+                      TextField(
+                        controller: nomeController,
                         decoration: InputDecoration(
                           labelText: "Nome",
                           border: OutlineInputBorder(),
                         ),
                       ),
                       SizedBox(height: 16),
-
                       TextField(
                         controller: emailController,
                         decoration: InputDecoration(
@@ -130,7 +125,6 @@ class CadastroScreen extends StatelessWidget {
                         ),
                         obscureText: true,
                       ),
-                     
                       SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -141,7 +135,7 @@ class CadastroScreen extends StatelessWidget {
                         ),
                         onPressed: () => login(context),
                         child: Text(
-                          "Cadastrar", //
+                          "Cadastrar",
                           style: TextStyle(fontSize: 16, color: AppTheme.backgroundColor),
                         ),
                       ),
