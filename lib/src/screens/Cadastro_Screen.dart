@@ -141,7 +141,7 @@ class CadastroScreen extends StatelessWidget {
                         ),
                         onPressed: () => login(context),
                         child: Text(
-                          "Cadastrar",
+                          "Cadastrar", //
                           style: TextStyle(fontSize: 16, color: AppTheme.backgroundColor),
                         ),
                       ),
