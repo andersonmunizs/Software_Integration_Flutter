@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_one/src/constants/theme.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class CadastroScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
@@ -142,7 +141,7 @@ class CadastroScreen extends StatelessWidget {
                         ),
                         onPressed: () => login(context),
                         child: Text(
-                          "Cadatrar",
+                          "Cadastrar",
                           style: TextStyle(fontSize: 16, color: AppTheme.backgroundColor),
                         ),
                       ),

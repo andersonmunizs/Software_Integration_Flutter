@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:app_one/src/constants/theme.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();

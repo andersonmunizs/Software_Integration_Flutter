@@ -115,13 +115,11 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                   firstDate: DateTime(2000),
                   lastDate: DateTime.now(),
                 );
-                if (pickedDate != null) {
-                  setState(() {
-                    dataCriacao = pickedDate;
-                    filterPerguntas();
-                  });
-                }
-              },
+                setState(() {
+                  dataCriacao = pickedDate;
+                  filterPerguntas();
+                });
+                            },
               child: AbsorbPointer(
                 child: TextField(
                   decoration: InputDecoration(
