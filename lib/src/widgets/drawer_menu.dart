@@ -50,6 +50,14 @@ class DrawerMenu extends StatelessWidget {
             },
           ),
           ListTile(
+            leading: Icon(Icons.chat),
+            title: Text('Cadastro login'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context,   '/cadastrocliente');
+            },
+          ),
+        
+          ListTile(
             leading: Icon(Icons.logout),
             title: Text('Logout'),
             onTap: () {

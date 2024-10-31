@@ -3,7 +3,7 @@ import 'package:app_one/src/constants/theme.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class LoginScreen extends StatelessWidget {
+class CadastroScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -106,6 +106,15 @@ class LoginScreen extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
+                       TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: "Nome",
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                      SizedBox(height: 16),
+
                       TextField(
                         controller: emailController,
                         decoration: InputDecoration(
@@ -122,18 +131,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                         obscureText: true,
                       ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            // Ação ao clicar em "Esqueci minha senha"
-                          },
-                          child: Text(
-                            "Esqueci minha senha",
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
-                      ),
+                     
                       SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -144,20 +142,10 @@ class LoginScreen extends StatelessWidget {
                         ),
                         onPressed: () => login(context),
                         child: Text(
-                          "Entrar",
+                          "Cadatrar",
                           style: TextStyle(fontSize: 16, color: AppTheme.backgroundColor),
                         ),
                       ),
-
-                      TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/cadastrocliente');
-                          },
-                          child: Text(
-                            "Cadastrar - se",
-                            style: TextStyle(color: Colors.blue),
-                          ),
-                        ),
                     ],
                   ),
                 ),

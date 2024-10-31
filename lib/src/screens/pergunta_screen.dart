@@ -138,92 +138,90 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
             // Tabela de dados com DataTable estilizada
             Expanded(
               child: Container(
-                width: double.infinity, // Garante que o container ocupe toda a largura
-                height: double.infinity, // Garante que o container ocupe toda a altura
-                child: DataTable(
-                  columnSpacing: 20,
-                  
-                  headingRowColor: MaterialStateProperty.all(AppTheme.primaryColor),
-                  headingTextStyle: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                  columns: const [
-                    DataColumn(label: Text("Pergunta")),
-                    DataColumn(label: Text("Cliente Vinculado")),
-                    DataColumn(label: Text("Data de Criação")),
-                    DataColumn(label: Text("Status")),
-                    DataColumn(label: Text("Ações")), // Coluna para ações
-                  ],
-                  rows: filteredPerguntas.map((pergunta) {
-                    return DataRow(
-                      cells: [
-                        DataCell(Text(
-                          pergunta["pergunta"],
-                          style: TextStyle(fontSize: 16),
-                        )),
-                        DataCell(Text(
-                          pergunta["cliente"],
-                          style: TextStyle(fontSize: 16),
-                        )),
-                        DataCell(Text(
-                          "${pergunta["dataCriacao"].day}/${pergunta["dataCriacao"].month}/${pergunta["dataCriacao"].year}",
-                          style: TextStyle(fontSize: 16),
-                        )),
-                        DataCell(
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 4,
-                            ),
-                            decoration: BoxDecoration(
-                              color: pergunta["status"] == "Ativo"
-                                  ? Colors.green[200]
-                                  : Colors.red[200],
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              pergunta["status"],
-                              style: TextStyle(fontSize: 16),
+                // width: double.infinity, // Garante que o container ocupe toda a largura
+                // height: double.infinity, // Garante que o container ocupe toda a altura
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: DataTable(
+                    columnSpacing: 20,
+                    headingRowColor: MaterialStateProperty.all(AppTheme.primaryColor),
+                    headingTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    columns: const [
+                      DataColumn(label: Text("Pergunta")),
+                      DataColumn(label: Text("Cliente Vinculado")),
+                      DataColumn(label: Text("Data de Criação")),
+                      DataColumn(label: Text("Status")),
+                      DataColumn(label: Text("Ações")),
+                    ],
+                    rows: filteredPerguntas.map((pergunta) {
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(
+                            pergunta["pergunta"],
+                            style: TextStyle(fontSize: 16),
+                          )),
+                          DataCell(Text(
+                            pergunta["cliente"],
+                            style: TextStyle(fontSize: 16),
+                          )),
+                          DataCell(Text(
+                            "${pergunta["dataCriacao"].day}/${pergunta["dataCriacao"].month}/${pergunta["dataCriacao"].year}",
+                            style: TextStyle(fontSize: 16),
+                          )),
+                          DataCell(
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: pergunta["status"] == "Ativo"
+                                    ? Colors.green[200]
+                                    : Colors.red[200],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                pergunta["status"],
+                                style: TextStyle(fontSize: 16),
+                              ),
                             ),
                           ),
-                        ),
-                        // Célula com os ícones de ação
-                        DataCell(Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.search),
-                              color: AppTheme.primaryColor,
-                              onPressed: () {
-                                // Ação para visualizar
-                                navigateToCadastroPerguntas(pergunta);
-                              },
-                              tooltip: "Visualizar",
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.edit),
-                              color: AppTheme.primaryColor,
-                              onPressed: () {
-                                // Ação para modificar
-                                navigateToCadastroPerguntas(pergunta);
-                              },
-                              tooltip: "Modificar",
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete),
-                              color: AppTheme.vermelo,
-                              onPressed: () {
-                                // Ação para deletar
-                                // Adicione sua lógica de exclusão aqui
-                              },
-                              tooltip: "Deletar",
-                            ),
-                          ],
-                        )),
-                      ],
-                    );
-                  }).toList(),
+                          DataCell(Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              IconButton(
+                                icon: Icon(Icons.search),
+                                color: AppTheme.primaryColor,
+                                onPressed: () {
+                                  navigateToCadastroPerguntas(pergunta);
+                                },
+                                tooltip: "Visualizar",
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.edit),
+                                color: AppTheme.primaryColor,
+                                onPressed: () {
+                                  navigateToCadastroPerguntas(pergunta);
+                                },
+                                tooltip: "Modificar",
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.delete),
+                                color: AppTheme.vermelo,
+                                onPressed: () {
+                                  // Adicione sua lógica de exclusão aqui
+                                },
+                                tooltip: "Deletar",
+                              ),
+                            ],
+                          )),
+                        ],
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
             ),

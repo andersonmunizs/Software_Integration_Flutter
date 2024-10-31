@@ -1,3 +1,4 @@
+import 'package:app_one/src/screens/Cadastro_Screen.dart';
 import 'package:app_one/src/screens/cadastro_perguntas_page.dart';
 import 'package:flutter/material.dart';
 import 'src/constants/theme.dart';
@@ -23,6 +24,8 @@ class MyApp extends StatelessWidget {
         '/perguntas': (context) => PerguntaScreen(),
         '/dashboard': (context) => DashboardScreen(),
         '/cadastroperguntas': (context) => CadastroPerguntaPage(),
+        '/cadastrocliente': (context) => CadastroScreen(),
+
       },
     );
   }
