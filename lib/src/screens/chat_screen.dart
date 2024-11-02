@@ -26,8 +26,13 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Conversa")),
-      drawer: DrawerMenu(),
+      appBar: AppBar(
+        title: Text(
+          "Conversa",
+          style: TextStyle(color: Colors.white), // Cor branca para o título
+        ),
+      ),
+      drawer: DrawerMenu(), // Coloquei o drawer no Scaffold
       body: Column(
         children: [
           Expanded(
