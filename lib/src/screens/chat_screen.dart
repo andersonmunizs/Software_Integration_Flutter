@@ -8,8 +8,8 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final List<Map<String, String>> chatMessages = [
-    {"textoPergunta": "Qual é a sua dúvida?", "resposta": ""},
-    {"textoPergunta": "Gostaria de ajuda em algo?", "resposta": ""},
+    {"textoPergunta": "Qual é o seu nome?", "resposta": ""},
+    {"textoPergunta": "Qual é o seu CPF?", "resposta": ""},
   ];
   final TextEditingController messageController = TextEditingController();
 
