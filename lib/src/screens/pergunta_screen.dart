@@ -1,35 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http; // Add this import
+import 'dart:convert'; // Add this import
 import '../widgets/drawer_menu.dart';
 import 'package:app_one/src/constants/theme.dart';
+import 'package:app_one/src/screens/cadastro_perguntas_page.dart'; // Adjust the path as necessary
 
 class PerguntaScreen extends StatefulWidget {
+  final String role;
+  PerguntaScreen({required this.role});
+
   @override
   _PerguntaScreenState createState() => _PerguntaScreenState();
 }
 
 class _PerguntaScreenState extends State<PerguntaScreen> {
   final TextEditingController perguntaController = TextEditingController();
-  List<Map<String, dynamic>> perguntas = [
-    {
-      "pergunta": "Qual é a sua cor favorita?",
-      "cliente": "João Silva",
-      "dataCriacao": DateTime(2024, 10, 1),
-      "status": "Ativo"
-    },
-    {
-      "pergunta": "Onde você mora?",
-      "cliente": "Maria Souza",
-      "dataCriacao": DateTime(2024, 9, 25),
-      "status": "Inativo"
-    },
-    {
-      "pergunta": "Qual é o seu hobby?",
-      "cliente": "Carlos Pereira",
-      "dataCriacao": DateTime(2024, 10, 15),
-      "status": "Ativo"
-    },
-  ];
-
+  List<Map<String, dynamic>> perguntas = [];
   List<Map<String, dynamic>> filteredPerguntas = [];
   String status = "Todos";
   DateTime? dataCriacao;
@@ -37,7 +23,32 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
   @override
   void initState() {
     super.initState();
-    filteredPerguntas = List.from(perguntas);
+    fetchPerguntas(); // Replace initializing with API call
+  }
+
+  Future<void> fetchPerguntas() async {
+    try {
+      final response = await http.get(Uri.parse('http://192.168.18.4:5183/api/Pergunta'));
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
+        setState(() {
+          perguntas = data.map((item) {
+            return {
+              "idPergunta": item["idPergunta"],
+              "pergunta": item["textoPergunta"],
+              "cliente": item["clienteNomes"].isNotEmpty ? item["clienteNomes"].join(', ') : 'Nenhum',
+              "dataCriacao": DateTime.parse(item["data"]),
+              "status": item["clienteEmails"].isNotEmpty ? "Ativo" : "Inativo",
+            };
+          }).toList();
+          filterPerguntas();
+        });
+      } else {
+        print('Erro ao buscar perguntas: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exceção ao buscar perguntas: $e');
+    }
   }
 
   void filterPerguntas() {
@@ -57,7 +68,13 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
 
   void navigateToCadastroPerguntas(Map<String, dynamic> pergunta) {
     // Navega para a rota /cadastroperguntas com os dados da pergunta
-    Navigator.pushNamed(context, '/cadastroperguntas', arguments: pergunta);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CadastroPerguntaPage(role: widget.role),
+        settings: RouteSettings(arguments: pergunta),
+      ),
+    );
   }
 
   @override
@@ -66,7 +83,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
       appBar: AppBar(
         title: Text("Consultar Perguntas", style: TextStyle(color: AppTheme.textAppMEnu)),
       ),
-      drawer: DrawerMenu(),
+      drawer: DrawerMenu(role: widget.role),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -187,35 +204,29 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                               ),
                             ),
                           ),
-                          DataCell(Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              IconButton(
-                                icon: Icon(Icons.search),
-                                color: AppTheme.primaryColor,
-                                onPressed: () {
-                                  navigateToCadastroPerguntas(pergunta);
-                                },
-                                tooltip: "Visualizar",
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.edit),
-                                color: AppTheme.primaryColor,
-                                onPressed: () {
-                                  navigateToCadastroPerguntas(pergunta);
-                                },
-                                tooltip: "Modificar",
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.delete),
-                                color: AppTheme.vermelo,
-                                onPressed: () {
-                                  // Adicione sua lógica de exclusão aqui
-                                },
-                                tooltip: "Deletar",
-                              ),
-                            ],
-                          )),
+                          DataCell(
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.search),
+                                  color: AppTheme.primaryColor,
+                                  onPressed: () {
+                                    navigateToCadastroPerguntas(pergunta);
+                                  },
+                                  tooltip: "Visualizar",
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.delete),
+                                  color: AppTheme.vermelo,
+                                  onPressed: () {
+                                    // Adicione sua lógica de exclusão aqui
+                                  },
+                                  tooltip: "Deletar",
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       );
                     }).toList(),

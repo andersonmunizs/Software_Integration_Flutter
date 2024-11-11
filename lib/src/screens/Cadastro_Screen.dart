@@ -1,56 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:app_one/src/constants/theme.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class CadastroScreen extends StatelessWidget {
+class CadastroScreen extends StatefulWidget {
+  @override
+  _CadastroScreenState createState() => _CadastroScreenState();
+}
+
+class _CadastroScreenState extends State<CadastroScreen> {
   final TextEditingController nomeController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  // Função para fazer a requisição de login
-  Future<void> login(BuildContext context) async {
+  // Função para fazer a requisição de registro
+  Future<void> register(BuildContext context) async {
+    final nome = nomeController.text;
     final email = emailController.text;
-    final password = passwordController.text;
-    var codeNumber = 200; // apenas para passar da requisição
+    final senha = passwordController.text;
+    final role = "Client";
 
     try {
-      // Descomente e substitua ao fazer a requisição real
-      // final response = await http.post(
-      //   Uri.parse('https://suaapi.com/login'), // Substitua pelo URL da sua API
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: jsonEncode({
-      //     'email': email,
-      //     'password': password,
-      //   }),
-      // );
+      // Envia a requisição para a API de registro
+      final response = await http.post(
+        Uri.parse('http://192.168.18.4:5183/api/Auth/register'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'nome': nome,
+          'email': email,
+          'senha': senha,
+          'role': role,
+        }),
+      );
 
-      // Verifica a resposta da API
-      // if (response.statusCode == 200) {
-      if (codeNumber == 200) {
-        //final data = jsonDecode(response.body);
-        //final success = data['success']; // Suponha que a resposta tenha um campo 'success'
-
-        if (codeNumber == 200) { // substitua pelo if com 'success' quando usar a API real
-          // Login bem-sucedido
-          Navigator.pushReplacementNamed(context, '/dashboard');
-        } else {
-          // Exibe mensagem de erro se o login falhar
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: Text("Erro de Login"),
-              content: Text("Email ou senha incorretos. Tente novamente."),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text("OK"),
-                ),
-              ],
-            ),
-          );
-        }
+      if (response.statusCode == 200) {
+        // Registro bem-sucedido
+        Navigator.pushReplacementNamed(context, '/dashboard');
       } else {
-        throw Exception("Erro de servidor");
+        // Exibe mensagem de erro se o registro falhar
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Erro de Registro"),
+            content: Text("Falha no registro. Tente novamente."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("OK"),
+              ),
+            ],
+          ),
+        );
       }
     } catch (e) {
       showDialog(
@@ -67,6 +67,14 @@ class CadastroScreen extends StatelessWidget {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    nomeController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -133,7 +141,7 @@ class CadastroScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        onPressed: () => login(context),
+                        onPressed: () => register(context),
                         child: Text(
                           "Cadastrar",
                           style: TextStyle(fontSize: 16, color: AppTheme.backgroundColor),

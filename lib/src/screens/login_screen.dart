@@ -1,49 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:app_one/src/constants/theme.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:app_one/src/screens/chat_screen.dart';
+import 'package:app_one/src/screens/dashboard_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   // Função para fazer a requisição de login
   Future<void> login(BuildContext context) async {
     final email = emailController.text;
-    final password = passwordController.text;
-    var codeNumber = 200; // so para passar da requisição
-
+    final senha = passwordController.text;
 
     try {
-      // descomentar depois e subistituir
-     // Envia a requisição para a API
-      // final response = await http.post(
-      //   Uri.parse('https://suaapi.com/login'), // Substitua pelo URL da sua API
-      //   headers: {'Content-Type': 'application/json'},
-      //   body: jsonEncode({
-      //     'email': email,
-      //     'password': password,
-      //   }),
-      // );
-    
-      
-      // Verifica a resposta da API // descomentar depois e substituir
-     // if (response.statusCode == 200) {
-      if (codeNumber == 200) {
-      
-        //final data = jsonDecode(response.body);
-        //final success = data['success']; // Suponha que a resposta tem um campo 'success'
+      // Envia a requisição para a API de login
+      final response = await http.post(
+        Uri.parse('http://192.168.18.4:5183/api/Auth/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'email': email,
+          'senha': senha,
+        }),
+      );
 
-       // if (success || codeNumber == 200) {  // descomentar depois e substituir
-         if (codeNumber == 200) {
-          // Login bem-sucedido
-          Navigator.pushReplacementNamed(context, '/dashboard');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final role = data['role'][0];
+
+        if (role == 'Client') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => ChatScreen(role: role)),
+          );
+        } else if (role == 'Admin') {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => DashboardScreen(role: role)),
+          );
         } else {
-          // Exibe mensagem de erro se o login falhar
+          // Role desconhecida
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text("Erro de Login"),
-              content: Text("Email ou senha incorretos. Tente novamente."),
+              title: Text("Erro"),
+              content: Text("Tipo de usuário desconhecido."),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
@@ -54,7 +61,20 @@ class LoginScreen extends StatelessWidget {
           );
         }
       } else {
-        throw Exception("Erro de servidor");
+        // Exibe mensagem de erro se o login falhar
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text("Erro de Login"),
+            content: Text("Email ou senha incorretos. Tente novamente."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text("OK"),
+              ),
+            ],
+          ),
+        );
       }
     } catch (e) {
       showDialog(
@@ -71,6 +91,13 @@ class LoginScreen extends StatelessWidget {
         ),
       );
     }
+  }
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 
   @override
@@ -147,16 +174,15 @@ class LoginScreen extends StatelessWidget {
                           style: TextStyle(fontSize: 16, color: AppTheme.backgroundColor),
                         ),
                       ),
-
                       TextButton(
-                          onPressed: () {
-                            Navigator.pushReplacementNamed(context, '/cadastrocliente');
-                          },
-                          child: Text(
-                            "Cadastrar - se",
-                            style: TextStyle(color: Colors.blue),
-                          ),
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, '/cadastrocliente');
+                        },
+                        child: Text(
+                          "Cadastrar - se",
+                          style: TextStyle(color: Colors.blue),
                         ),
+                      ),
                     ],
                   ),
                 ),

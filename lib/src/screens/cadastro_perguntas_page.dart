@@ -1,9 +1,13 @@
 import 'package:app_one/src/constants/theme.dart';
 import 'package:app_one/src/widgets/drawer_menu.dart'; // Importe o DrawerMenu
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:intl/intl.dart';
 
 class CadastroPerguntaPage extends StatefulWidget {
-  const CadastroPerguntaPage({Key? key}) : super(key: key);
+  final String role;
+  CadastroPerguntaPage({required this.role});
 
   @override
   _CadastroPerguntaPageState createState() => _CadastroPerguntaPageState();
@@ -17,34 +21,42 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
 
   List<Map<String, dynamic>> clientes = [];
   List<Map<String, dynamic>> clientesAdicionados = [];
+  List<String> userClientEmails = [];
 
   void addCliente(Map<String, dynamic> cliente) {
     setState(() {
       clientesAdicionados.add(cliente);
+      userClientEmails.add(cliente['email']);
     });
   }
 
-  void removeCliente(int id) {
+  void removeCliente(String id) {
     setState(() {
-      clientesAdicionados.removeWhere((cliente) => cliente['id'] == id);
+      final clienteToRemove = clientesAdicionados.firstWhere(
+        (cliente) => cliente['id'] == id,
+        orElse: () => {},
+      );
+      if (clienteToRemove != null) {
+        userClientEmails.remove(clienteToRemove['email']);
+        clientesAdicionados.remove(clienteToRemove);
+      }
     });
   }
 
-  void searchClientes(String query) {
-    // Simulação de busca de clientes
-    final allClientes = [
-      {"id": 1, "nome": "Cliente 1"},
-      {"id": 2, "nome": "Cliente 2"},
-      {"id": 3, "nome": "Cliente 3"},
-      {"id": 4, "nome": "Cliente 4"},
-    ];
+  void searchClientes(String query) async {
+    final response = await http.get(Uri.parse('http://192.168.18.4:5183/api/Cliente/all'));
 
-    setState(() {
-      clientes = allClientes
-          .where((cliente) =>
-              (cliente['nome'] as String?)?.toLowerCase().contains(query.toLowerCase()) ?? false)
-          .toList();
-    });
+    if (response.statusCode == 200) {
+      final List<dynamic> allClientes = json.decode(response.body);
+      setState(() {
+        clientes = allClientes.where((cliente) {
+          final nome = cliente['nome']?.toLowerCase() ?? '';
+          return nome.contains(query.toLowerCase());
+        }).cast<Map<String, dynamic>>().toList();
+      });
+    } else {
+      print('Falhou ao pesquisar os clientes.');
+    }
   }
 
   @override
@@ -62,7 +74,7 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
         title: const Text("Cadastro de Pergunta", style: TextStyle(color: AppTheme.textAppMEnu)),
         backgroundColor: AppTheme.primaryColor,
       ),
-      drawer: DrawerMenu(), // Usando o DrawerMenu aqui
+      drawer: DrawerMenu(role: widget.role),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
@@ -163,26 +175,9 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
                     return ListTile(
                       title: Text(cliente['nome']),
                       subtitle: Text("ID: ${cliente['id']}"),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.visibility, color: Colors.blue),
-                            onPressed: () {
-                              // Lógica para visualizar detalhes do cliente
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.orange),
-                            onPressed: () {
-                              // Lógica para editar o cliente
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () => removeCliente(cliente['id']),
-                          ),
-                        ],
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => removeCliente(cliente['id']),
                       ),
                     );
                   },
@@ -207,13 +202,34 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green,
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          // Ação do botão confirmar
-                          // Aqui você pode processar os dados
-                          print("Pergunta: ${_perguntaController.text}");
-                          print("Descrição: ${_descricaoController.text}");
-                          print("Clientes Adicionados: $clientesAdicionados");
+                          // Format the date as 'YYYY-MM-DD'
+                          String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+                          final perguntaData = {
+                            "textoPergunta": _perguntaController.text,
+                            "descricao": _descricaoController.text,
+                            "data": formattedDate,
+                            "userClientEmails": userClientEmails,
+                          };
+
+                          final response = await http.post(
+                            Uri.parse('http://192.168.18.4:5183/api/Pergunta/adicionar'),
+                            headers: {'Content-Type': 'application/json'},
+                            body: jsonEncode(perguntaData),
+                          );
+
+                          if (response.statusCode == 201 || response.statusCode == 200) {
+                            print('Pergunta cadastrada com sucesso');
+                            // Navigate to CadastroPerguntaPage to reset the screen
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => CadastroPerguntaPage(role: widget.role)),
+                            );
+                          } else {
+                            print('Erro ao cadastrar pergunta: ${response.body}');
+                          }
                         }
                       },
                       child: const Text("CONFIRMAR"),

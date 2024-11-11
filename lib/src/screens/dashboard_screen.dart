@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import '../widgets/drawer_menu.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -8,6 +7,8 @@ class DashboardScreen extends StatelessWidget {
   final int totalPerguntas = 10;
   final int totalRespostas = 5;
   final int conversasAtivas = 3;
+  final String role;
+  DashboardScreen({required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,7 @@ class DashboardScreen extends StatelessWidget {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      drawer: DrawerMenu(),
+      drawer: DrawerMenu(role: role),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
