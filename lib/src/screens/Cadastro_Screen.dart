@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class CadastroScreen extends StatefulWidget {
+  const CadastroScreen({super.key});
+
   @override
   _CadastroScreenState createState() => _CadastroScreenState();
 }
@@ -18,7 +20,7 @@ class _CadastroScreenState extends State<CadastroScreen> {
     final nome = nomeController.text;
     final email = emailController.text;
     final senha = passwordController.text;
-    final role = "Client";
+    const role = "Client";
 
     try {
       // Envia a requisição para a API de registro
@@ -41,12 +43,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("Erro de Registro"),
-            content: Text("Falha no registro. Tente novamente."),
+            title: const Text("Erro de Registro"),
+            content: const Text("Falha no registro. Tente novamente."),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text("OK"),
+                child: const Text("OK"),
               ),
             ],
           ),
@@ -56,12 +58,12 @@ class _CadastroScreenState extends State<CadastroScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Erro de Conexão"),
-          content: Text("Não foi possível conectar à API. Verifique sua conexão."),
+          title: const Text("Erro de Conexão"),
+          content: const Text("Não foi possível conectar à API. Verifique sua conexão."),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         ),
@@ -90,17 +92,17 @@ class _CadastroScreenState extends State<CadastroScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Container com logo local
-              Container(
+              SizedBox(
                 height: 100,
                 width: 300,
                 child: Image.asset('lib/src/assets/Rota-Oeste-Logo-600x257.png'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Container(
                   width: 350,
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: AppTheme.textAppMEnu,
                     borderRadius: BorderRadius.circular(16),
@@ -111,38 +113,38 @@ class _CadastroScreenState extends State<CadastroScreen> {
                     children: [
                       TextField(
                         controller: nomeController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Nome",
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       TextField(
                         controller: emailController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Email",
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       TextField(
                         controller: passwordController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Senha",
                           border: OutlineInputBorder(),
                         ),
                         obscureText: true,
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         onPressed: () => register(context),
-                        child: Text(
+                        child: const Text(
                           "Cadastrar",
                           style: TextStyle(fontSize: 16, color: AppTheme.backgroundColor),
                         ),

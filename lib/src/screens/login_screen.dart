@@ -6,6 +6,8 @@ import 'package:app_one/src/screens/chat_screen.dart';
 import 'package:app_one/src/screens/dashboard_screen.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -37,7 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
         if (role == 'Client') {
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => ChatScreen(role: role)),
+            MaterialPageRoute(
+              builder: (context) => ChatScreen(role: role, email: email), // Ensure both parameters are passed
+            ),
           );
         } else if (role == 'Admin') {
           Navigator.pushReplacement(
@@ -49,12 +53,12 @@ class _LoginScreenState extends State<LoginScreen> {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text("Erro"),
-              content: Text("Tipo de usuário desconhecido."),
+              title: const Text("Erro"),
+              content: const Text("Tipo de usuário desconhecido."),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text("OK"),
+                  child: const Text("OK"),
                 ),
               ],
             ),
@@ -65,12 +69,12 @@ class _LoginScreenState extends State<LoginScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: Text("Erro de Login"),
-            content: Text("Email ou senha incorretos. Tente novamente."),
+            title: const Text("Erro de Login"),
+            content: const Text("Email ou senha incorretos. Tente novamente."),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text("OK"),
+                child: const Text("OK"),
               ),
             ],
           ),
@@ -80,12 +84,12 @@ class _LoginScreenState extends State<LoginScreen> {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text("Erro de Conexão"),
-          content: Text("Não foi possível conectar à API. Verifique sua conexão."),
+          title: const Text("Erro de Conexão"),
+          content: const Text("Não foi possível conectar à API. Verifique sua conexão."),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: Text("OK"),
+              child: const Text("OK"),
             ),
           ],
         ),
@@ -113,17 +117,17 @@ class _LoginScreenState extends State<LoginScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Container com logo local
-              Container(
+              SizedBox(
                 height: 100,
                 width: 300,
                 child: Image.asset('lib/src/assets/Rota-Oeste-Logo-600x257.png'),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Container(
                   width: 350,
-                  padding: EdgeInsets.all(24),
+                  padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: AppTheme.textAppMEnu,
                     borderRadius: BorderRadius.circular(16),
@@ -134,15 +138,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       TextField(
                         controller: emailController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Email",
                           border: OutlineInputBorder(),
                         ),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       TextField(
                         controller: passwordController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: "Senha",
                           border: OutlineInputBorder(),
                         ),
@@ -154,22 +158,22 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             // Ação ao clicar em "Esqueci minha senha"
                           },
-                          child: Text(
+                          child: const Text(
                             "Esqueci minha senha",
                             style: TextStyle(color: Colors.blue),
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
                         onPressed: () => login(context),
-                        child: Text(
+                        child: const Text(
                           "Entrar",
                           style: TextStyle(fontSize: 16, color: AppTheme.backgroundColor),
                         ),
@@ -178,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: () {
                           Navigator.pushReplacementNamed(context, '/cadastrocliente');
                         },
-                        child: Text(
+                        child: const Text(
                           "Cadastrar - se",
                           style: TextStyle(color: Colors.blue),
                         ),

@@ -8,13 +8,13 @@ class DashboardScreen extends StatelessWidget {
   final int totalRespostas = 5;
   final int conversasAtivas = 3;
   final String role;
-  DashboardScreen({required this.role});
+  const DashboardScreen({super.key, required this.role});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Dashboard",
           style: TextStyle(color: Colors.white),
         ),
@@ -26,11 +26,11 @@ class DashboardScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Informações do Sistema", style: Theme.of(context).textTheme.displayLarge),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(child: _buildBarChart()),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text("Distribuição de Conversas", style: Theme.of(context).textTheme.displayLarge),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SizedBox(
               height: 200,
               child: _buildPieChart(),
@@ -52,7 +52,7 @@ class DashboardScreen extends StatelessWidget {
             getTooltipItem: (group, groupIndex, value, title) {
               return BarTooltipItem(
                 '$title\n$value',
-                TextStyle(color: Colors.white),
+                const TextStyle(color: Colors.white),
               );
             },
           ),
@@ -65,22 +65,22 @@ class DashboardScreen extends StatelessWidget {
               getTitlesWidget: (value, meta) {
                 switch (value.toInt()) {
                   case 0:
-                    return Text('Perguntas');
+                    return const Text('Perguntas');
                   case 1:
-                    return Text('Respostas');
+                    return const Text('Respostas');
                   default:
-                    return Text('');
+                    return const Text('');
                 }
               },
             ),
           ),
-          leftTitles: AxisTitles(
+          leftTitles: const AxisTitles(
             sideTitles: SideTitles(showTitles: true),
           ),
-          topTitles: AxisTitles(
+          topTitles: const AxisTitles(
             sideTitles: SideTitles(showTitles: false),
           ),
-          rightTitles: AxisTitles(
+          rightTitles: const AxisTitles(
             sideTitles: SideTitles(showTitles: false),
           ),
         ),
@@ -116,17 +116,17 @@ class DashboardScreen extends StatelessWidget {
           PieChartSectionData(
             value: totalPerguntas.toDouble(),
             color: AppTheme.primaryColor,
-            title: '${totalPerguntas}',
+            title: '$totalPerguntas',
           ),
           PieChartSectionData(
             value: totalRespostas.toDouble(),
             color: AppTheme.secondaryColor,
-            title: '${totalRespostas}',
+            title: '$totalRespostas',
           ),
           PieChartSectionData(
             value: conversasAtivas.toDouble(),
             color: AppTheme.accentColor,
-            title: '${conversasAtivas}',
+            title: '$conversasAtivas',
           ),
         ],
         borderData: FlBorderData(show: false),

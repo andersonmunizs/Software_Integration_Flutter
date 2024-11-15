@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http; // Adicione este import
+import 'dart:convert'; // Adicione este import
 import '../widgets/drawer_menu.dart';
+import 'package:app_one/src/constants/theme.dart'; // Add this line
 
 class ChatScreen extends StatefulWidget {
   final String role;
-  final String email; // Adicione esta linha
+  final String? email; // Make email an optional parameter
 
-  ChatScreen({required this.role, required this.email}); // Modifique o construtor
+  const ChatScreen({super.key, required this.role, this.email}); // Made email optional
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  List<Map<String, dynamic>> chatMessages = []; // Atualize o tipo para dynamic
+  List<Map<String, dynamic>> chatMessages = []; // Removed static data
   bool isLoading = true; // Indicador de carregamento
   final TextEditingController messageController = TextEditingController();
 
@@ -25,22 +27,45 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future<void> fetchPerguntas() async {
     try {
-      final response = await http.get(
-        Uri.parse('http://192.168.18.4:5183/api/Cliente/perguntas'),
+      final response = await http.post(
+        Uri.parse('http://192.168.18.4:5183/api/Pergunta/PorUsuario'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': widget.email}), // Envie o email no corpo
+        body: jsonEncode(widget.email), // Send email as JSON string
       );
 
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
+        List<Map<String, dynamic>> perguntas = data.map((item) {
+          return {
+            "idPergunta": item["idPergunta"],
+            "textoPergunta": item["textoPergunta"],
+            "resposta": "",
+            "data": item["data"],
+          };
+        }).toList();
+
+        // Fetch responses for each question
+        for (int i = 0; i < perguntas.length; i++) {
+          final idPergunta = perguntas[i]["idPergunta"];
+          final responseResposta = await http.post(
+            Uri.parse('http://192.168.18.4:5183/api/Resposta/respostas-por-pergunta-usuario'),
+            headers: {
+              'Content-Type': 'application/json',
+              'idPergunta': idPergunta.toString(),
+              'emailUsuario': widget.email ?? '',
+            },
+          );
+
+          if (responseResposta.statusCode == 200) {
+            final respostaData = json.decode(responseResposta.body);
+            if (respostaData.isNotEmpty) {
+              perguntas[i]["resposta"] = respostaData[0]["textoResposta"] ?? "";
+            }
+          }
+        }
+
         setState(() {
-          chatMessages = data.map((item) {
-            return {
-              "textoPergunta": item["textoPergunta"],
-              "resposta": item["descricao"],
-              "data": item["data"],
-            };
-          }).toList();
+          chatMessages = perguntas;
           isLoading = false;
         });
       } else {
@@ -54,6 +79,36 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         isLoading = false;
       });
+    }
+  }
+
+  Future<void> enviarResposta(int idPergunta, String textoResposta, int index) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://192.168.18.4:5183/api/Resposta/adicionar'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "idPergunta": idPergunta,
+          "emailUsuario": widget.email,
+          "textoResposta": textoResposta,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        setState(() {
+          chatMessages[index]["resposta"] = textoResposta; // Update resposta
+        });
+      } else {
+        // Optional: Handle error, e.g., show a Snackbar
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Erro ao enviar resposta.')),
+        );
+      }
+    } catch (e) {
+      // Optional: Handle exception, e.g., show a Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Exceção ao enviar resposta.')),
+      );
     }
   }
 
@@ -73,77 +128,96 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           "Conversa",
           style: TextStyle(color: Colors.white), // Cor branca para o título
         ),
       ),
       drawer: DrawerMenu(role: widget.role), // Coloquei o drawer no Scaffold
-      body: Column(
-        children: [
-          Expanded(
-            child: isLoading
-                ? Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemCount: chatMessages.length,
-                    itemBuilder: (context, index) {
-                      final message = chatMessages[index];
-                      final isUser = message["resposta"].isEmpty || message["resposta"] == 'Aguardando resposta...';
-                      return Align(
-                        alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-                        child: Container(
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: chatMessages.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final message = entry.value;
+                  final TextEditingController respostaController = TextEditingController();
+
+                  return Column(
+                    children: [
+                      // Pergunta
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        decoration: BoxDecoration(
+                          color: AppTheme.primaryColor,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Align(
+                          alignment: Alignment.centerLeft, // Align to left
+                          child: Text(
+                            message["textoPergunta"],
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Resposta existente ou campo para adicionar resposta
+                      if (message["resposta"].isNotEmpty) 
+                        Container(
+                          padding: const EdgeInsets.all(10),
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           decoration: BoxDecoration(
-                            color: isUser ? AppTheme.accentColor : AppTheme.primaryColor,
+                            color: AppTheme.accentColor,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: Column(
-                            crossAxisAlignment:
-                                isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                message["textoPergunta"],
-                                style: TextStyle(
-                                  color: isUser ? Colors.black : Colors.white,
-                                  fontSize: 16,
-                                ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              message["resposta"],
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
                               ),
-                              SizedBox(height: 5),
-                              if (!isUser)
-                                Text(
-                                  message["resposta"],
-                                  style: TextStyle(
-                                    color: isUser ? Colors.black : Colors.white,
-                                    fontSize: 14,
+                            ),
+                          ),
+                        )
+                      else
+                        // Campo para adicionar resposta com botão enviar
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: TextField(
+                                  controller: respostaController,
+                                  decoration: const InputDecoration(
+                                    labelText: "Digite sua resposta",
+                                    border: OutlineInputBorder(),
                                   ),
                                 ),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.send),
+                                onPressed: () {
+                                  String textoResposta = respostaController.text.trim();
+                                  if (textoResposta.isNotEmpty) {
+                                    int idPergunta = message["idPergunta"];
+                                    enviarResposta(idPergunta, textoResposta, index);
+                                    respostaController.clear();
+                                  }
+                                },
+                              ),
                             ],
                           ),
                         ),
-                      );
-                    },
-                  ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: messageController,
-                    decoration: InputDecoration(hintText: "Digite sua resposta"),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: sendMessage,
-                ),
-              ],
+                    ],
+                  );
+                }).toList(),
+              ),
             ),
-          ),
-        ],
-      ),
     );
   }
 }

@@ -7,7 +7,7 @@ import 'package:app_one/src/screens/cadastro_perguntas_page.dart'; // Adjust the
 
 class PerguntaScreen extends StatefulWidget {
   final String role;
-  PerguntaScreen({required this.role});
+  const PerguntaScreen({super.key, required this.role});
 
   @override
   _PerguntaScreenState createState() => _PerguntaScreenState();
@@ -81,7 +81,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Consultar Perguntas", style: TextStyle(color: AppTheme.textAppMEnu)),
+        title: const Text("Consultar Perguntas", style: TextStyle(color: AppTheme.textAppMEnu)),
       ),
       drawer: DrawerMenu(role: widget.role),
       body: Padding(
@@ -94,7 +94,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
               decoration: InputDecoration(
                 labelText: "Buscar Pergunta",
                 suffixIcon: IconButton(
-                  icon: Icon(Icons.search),
+                  icon: const Icon(Icons.search),
                   onPressed: filterPerguntas,
                 ),
               ),
@@ -143,7 +143,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                     labelText: dataCriacao == null
                         ? "Data de Criação"
                         : "${dataCriacao!.day}/${dataCriacao!.month}/${dataCriacao!.year}",
-                    border: OutlineInputBorder(),
+                    border: const OutlineInputBorder(),
                   ),
                 ),
               ),
@@ -159,7 +159,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                   scrollDirection: Axis.horizontal,
                   child: DataTable(
                     columnSpacing: 20,
-                    headingRowColor: MaterialStateProperty.all(AppTheme.primaryColor),
+                    headingRowColor: WidgetStateProperty.all(AppTheme.primaryColor),
                     headingTextStyle: const TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -176,19 +176,19 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                         cells: [
                           DataCell(Text(
                             pergunta["pergunta"],
-                            style: TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                           )),
                           DataCell(Text(
                             pergunta["cliente"],
-                            style: TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                           )),
                           DataCell(Text(
                             "${pergunta["dataCriacao"].day}/${pergunta["dataCriacao"].month}/${pergunta["dataCriacao"].year}",
-                            style: TextStyle(fontSize: 16),
+                            style: const TextStyle(fontSize: 16),
                           )),
                           DataCell(
                             Container(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                 horizontal: 8,
                                 vertical: 4,
                               ),
@@ -200,7 +200,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                               ),
                               child: Text(
                                 pergunta["status"],
-                                style: TextStyle(fontSize: 16),
+                                style: const TextStyle(fontSize: 16),
                               ),
                             ),
                           ),
@@ -209,7 +209,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.search),
+                                  icon: const Icon(Icons.search),
                                   color: AppTheme.primaryColor,
                                   onPressed: () {
                                     navigateToCadastroPerguntas(pergunta);
@@ -217,7 +217,7 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
                                   tooltip: "Visualizar",
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.delete),
+                                  icon: const Icon(Icons.delete),
                                   color: AppTheme.vermelo,
                                   onPressed: () {
                                     // Adicione sua lógica de exclusão aqui
@@ -240,3 +240,6 @@ class _PerguntaScreenState extends State<PerguntaScreen> {
     );
   }
 }
+
+// Check if there's any navigation to ChatScreen here
+// If so, ensure both 'role' and 'email' are provided

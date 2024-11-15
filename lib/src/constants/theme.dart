@@ -9,7 +9,7 @@ class AppTheme {
   static const Color textAppMEnu = Color(0xFFF5F5F5);
   static const Color vermelo = Color.fromARGB(255, 184, 4, 4);
 
-  static final TextTheme textTheme = TextTheme(
+  static final TextTheme textTheme = const TextTheme(
     displayLarge: TextStyle(
       fontSize: 32.0,
       fontWeight: FontWeight.bold,
@@ -70,13 +70,13 @@ class AppTheme {
       fillColor: Colors.white,
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8.0),
-        borderSide: BorderSide(color: secondaryColor),
+        borderSide: const BorderSide(color: secondaryColor),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8.0),
-        borderSide: BorderSide(color: primaryColor),
+        borderSide: const BorderSide(color: primaryColor),
       ),
-      labelStyle: TextStyle(color: secondaryColor),
+      labelStyle: const TextStyle(color: secondaryColor),
     ),
     colorScheme: ColorScheme.fromSwatch().copyWith(
       primary: primaryColor,

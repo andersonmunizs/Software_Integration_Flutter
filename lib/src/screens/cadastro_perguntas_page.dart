@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 
 class CadastroPerguntaPage extends StatefulWidget {
   final String role;
-  CadastroPerguntaPage({required this.role});
+  const CadastroPerguntaPage({super.key, required this.role});
 
   @override
   _CadastroPerguntaPageState createState() => _CadastroPerguntaPageState();
@@ -36,11 +36,9 @@ class _CadastroPerguntaPageState extends State<CadastroPerguntaPage> {
         (cliente) => cliente['id'] == id,
         orElse: () => {},
       );
-      if (clienteToRemove != null) {
-        userClientEmails.remove(clienteToRemove['email']);
-        clientesAdicionados.remove(clienteToRemove);
-      }
-    });
+      userClientEmails.remove(clienteToRemove['email']);
+      clientesAdicionados.remove(clienteToRemove);
+        });
   }
 
   void searchClientes(String query) async {

@@ -8,7 +8,7 @@ import 'package:app_one/src/screens/cadastro_perguntas_page.dart'; // Corrected 
 class DrawerMenu extends StatelessWidget {
   final String role;
 
-  DrawerMenu({required this.role});
+  const DrawerMenu({super.key, required this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class DrawerMenu extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          DrawerHeader(
+          const DrawerHeader(
             decoration: BoxDecoration(
               color: AppTheme.primaryColor,
             ),
@@ -30,8 +30,8 @@ class DrawerMenu extends StatelessWidget {
           ),
           if (role == 'Admin') ...[
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Dashboard'),
+              leading: const Icon(Icons.home),
+              title: const Text('Dashboard'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
@@ -40,8 +40,8 @@ class DrawerMenu extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(Icons.question_answer),
-              title: Text('Perguntas'),
+              leading: const Icon(Icons.question_answer),
+              title: const Text('Perguntas'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
@@ -50,8 +50,8 @@ class DrawerMenu extends StatelessWidget {
               },
             ),
             ListTile(
-              leading: Icon(Icons.chat),
-              title: Text('Cadastrar Perguntas'),
+              leading: const Icon(Icons.chat),
+              title: const Text('Cadastrar Perguntas'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
@@ -62,19 +62,19 @@ class DrawerMenu extends StatelessWidget {
           ],
           if (role == 'Client') ...[
             ListTile(
-              leading: Icon(Icons.chat),
-              title: Text('Chat'),
+              leading: const Icon(Icons.chat),
+              title: const Text('Chat'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => ChatScreen(role: role)),
+                  MaterialPageRoute(builder: (context) => ChatScreen(role: role)), // Removed email parameter
                 );
               },
             ),
           ],
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Logout'),
+            leading: const Icon(Icons.logout),
+            title: const Text('Logout'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/');
             },
